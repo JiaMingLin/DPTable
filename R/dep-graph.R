@@ -46,9 +46,9 @@ DependenceGraph <- setRefClass(
       )
       
       
-      if (flag.sample && flag.noise){
+      if (flag.sample && flag.noise){    
         #from util.R
-        if (.self$debug) browser()
+        if (.self$debug) browser()    #debug&表示
         epsilon.alpha.1 <- amplify_epsilon_under_sampling(epsilon.1, beta)
         sensitivity.scale.mi <- compute_mi_sensitivity_scale(.self$N, .self$flag.all.binary)
         b.scale.mi <- 2 * sensitivity.scale.mi / epsilon.alpha.1
@@ -69,9 +69,9 @@ DependenceGraph <- setRefClass(
       rsums <- matrix(rsums, nrow = length(rsums), ncol = 1)
       csums <- colSums(xtable)
       csums <- matrix(csums, nrow = 1, ncol = length(csums))
-      table.sum <- sum(rsums)
-      expected_sum <- rsums %*% csums / table.sum
-      return(expected_sum)
+      table.sum <- sum(rsums)                         #每行相加 數據總和
+      expected_sum <- rsums %*% csums / table.sum    #矩陣乘法      
+      return(expected_sum) #卡方期望值?
     },
     
     .filter_association_edges = function(pair, measure, bar, type) {
@@ -91,28 +91,28 @@ DependenceGraph <- setRefClass(
         Lap.CV2 <- DExp(rate = 1 / b.scale.mi)
         noise.thresh.CV2 <- r(Lap.CV2)(1)        
       }     
-      pairs <- combn(as.vector(data$domain$name), 2)
+      pairs <- combn(as.vector(data$domain$name), 2)  
       for (i in seq_len(ncol(pairs))) {
 #         if(.self$debug) browser()
         pair <- pairs[,i]
-        dk.name <- pair[1]
-        dl.name <- pair[2]
+        dk.name <- pair[1]       #行數
+        dl.name <- pair[2]       #列數
         curr_xtab <- xtabs(formula = ~ get(dk.name) + get(dl.name), data = data$rows)
         dk <- data$domain$dsize[which(data$domain$name == dk.name)]
         dl <- data$domain$dsize[which(data$domain$name == dl.name)]
         #compute measures of association       
         #compute chi2
-        expected_sum <- .get_xtable_expected_sum(curr_xtab)
-        chi2 <- sum((curr_xtab - expected_sum) ** 2 / expected_sum, na.rm = TRUE)
-        pvalue <- 1 - pchisq(chi2, df = (dk - 1) * (dl - 1))
-        chi2.critical <- qchisq((1 - .self$thresh[['pvalue']]), df = (dk - 1) * (dl - 1))
-        .filter_association_edges(pair, chi2, chi2.critical, type = "chi2")
+        expected_sum <- .get_xtable_expected_sum(curr_xtab)               #計算卡方
+        chi2 <- sum((curr_xtab - expected_sum) ** 2 / expected_sum, na.rm = TRUE)   #CHI  chisquared公式
+        pvalue <- 1 - pchisq(chi2, df = (dk - 1) * (dl - 1))   #pvalue:臨界值  df:自由度
+        chi2.critical <- qchisq((1 - .self$thresh[['pvalue']]), df = (dk - 1) * (dl - 1)) #根據顯著成度算卡方值
+        .filter_association_edges(pair, chi2, chi2.critical, type = "chi2")  #比較卡方值
         
         #compute mi and Gtest
         mi <- mi.empirical(curr_xtab, unit = 'log')
         
-        CV <- sqrt(chi2 / (.self$N * (min(dk, dl) - 1)))
-        .filter_association_edges(pair, CV, .self$thresh[['CV']], type = "CV")
+        CV <- sqrt(chi2 / (.self$N * (min(dk, dl) - 1)))                         #算cv相依性??
+        .filter_association_edges(pair, CV, .self$thresh[['CV']], type = "CV")  #相依過濾?
         
         if (flag.noise) {
           CV2.RH <- (.self$thresh[['CV']] ^ 2) * (min(dk, dl) - 1)/2 + noise.thresh.CV2

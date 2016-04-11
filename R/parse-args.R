@@ -1,4 +1,4 @@
-parse_args <- function(args) {
+parse_args <- function(args) {                                  #把计更㎝箇砞
 #   data.names <- c('adult', 'kosarak', 'aol', 'MSNBC'
 #                   , 'Data1', 'Data2', 'Data3', 'Data4'
 #                   , 'test', 'retail50', 'accidents50'
@@ -14,14 +14,14 @@ parse_args <- function(args) {
   names(options.args) <- unlist(options.names)
   #print(options.args)
   specs <- list()
-  if("f" %in% names(options.args)) {
+  if("f" %in% names(options.args)) {                            #癸酚把计琌既い%in%
 #     if (options.args['f'] %in% data.names) {
 #       specs$data.name <- as.character(options.args['f'])   
 #     }else {
 #       stop("not valid data file")
 #     }
           specs$data.name <- as.character(options.args['f'])   
-  }else{
+  }else{                                                               
     stop("no filename")
   }
   if ("e1" %in% names(options.args)) {

@@ -1,4 +1,4 @@
-Data <- setRefClass(
+Data <- setRefClass(           #讀取資料存放清單 及output的info檔案創建
   "Data",
   
   fields = list(
@@ -16,7 +16,7 @@ Data <- setRefClass(
       .load_coarse_data()
     }, 
     
-    sample_data = function(out.dir, rate, out.tag = '') {
+    sample_data = function(out.dir, rate, out.tag = '') {                        
       data.sample <- .self$origin[sample(.self$DB.size, round(.self$DB.size * rate)), ]
       # print(nrow(data.sample))
       out.path <- file.path(out.dir, .self$name)
@@ -27,7 +27,7 @@ Data <- setRefClass(
                   , col.names = FALSE
                   , sep = ","
       )
-      out.info = list(data.name = .self$name
+      out.info = list(data.name = .self$name                   #info檔
                       , data.size = .self$DB.size
                       , sample.name = out.name
                       , sample.rate = rate
@@ -42,7 +42,7 @@ Data <- setRefClass(
       
     },
     
-    .load_coarse_data_summary = function(){
+    .load_coarse_data_summary = function(){   #load domain
       .self$domain <- list()
       dataname <- .self$name
       path <- file.path('.', 'Data', dataname)
@@ -56,7 +56,7 @@ Data <- setRefClass(
       .self$domain$category <- sapply(domain.info, function(x) x[2])
       .self$domain$dsize <- sapply(domain.info, function(x) as.integer(x[3]))
       
-      process_levels <- function (x) {
+      process_levels <- function (x) {    #??????
         category <- x[2]
         dsize <- as.integer(x[3])
         levels <- c()
@@ -72,7 +72,7 @@ Data <- setRefClass(
     },
     
     
-    load_sample_info = function(out.dir, dataname, filename){
+    load_sample_info = function(out.dir, dataname, filename){ 
       path <- file.path(out.dir,filename)
       sample.info <- list()
       info.table <- read.table(file = paste(path, '.info', sep = ''))
@@ -84,10 +84,10 @@ Data <- setRefClass(
       return(sample.info)
     },
     
-    load_sample_data = function(out.dir, filename){
+    load_sample_data = function(out.dir, filename){   #load dat
       data <- list()
       path <- file.path(out.dir, filename)
-      rows <- read.csv(file = paste(path,'.dat', sep = '')
+      rows <- read.csv(file = paste(path,'.dat', sep = '') #READ AS CSV & DATA.FRAME then return
                        , header = FALSE
                        , col.names = .self$domain$name
                        , check.names = FALSE
@@ -105,8 +105,8 @@ Data <- setRefClass(
       return(data)
     },
     
-    .load_coarse_data = function() {
-      .self$origin <- list()
+    .load_coarse_data = function() {                    #讀取資料大小=NROW
+      .self$origin <- list() 
       path <- file.path('.', 'Data', .self$name)
       rows <- read.csv(file = paste(path, '-coarse.dat', sep = '')
                        , header = FALSE

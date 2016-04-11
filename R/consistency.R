@@ -21,7 +21,7 @@ ConsistentMargin <- setRefClass (
       names(.self$clique.noisy.freq) <- names(.self$cliques)
       .self$debug <- flag.debug
     },
-    
+    ##########################################################################
     fix_negative_entry_approx = function(flag.set = TRUE) {
       curr.freq.list <- .self$clique.noisy.freq
       for (i in seq_along(curr.freq.list)) {
