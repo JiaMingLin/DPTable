@@ -4,6 +4,7 @@ function FindOptimalMerging8(input_file,m,lambda,output_file)
 %lambda: the positive regularization parameter to trade-off between the DP cost and the maximum dissimilarity among cluster assignments.
 %output_file: the file name for the output
     [node_card,clique]=GetFileContent(input_file);
+    % there are a total d attributes
     d=length(node_card);
     n=length(clique);
     if n<=m
@@ -14,6 +15,7 @@ function FindOptimalMerging8(input_file,m,lambda,output_file)
     for i=1:n
         index=clique{i};
         O(index,i)=1;
+        % product of the attributes domain size in the clique i
         log_p(i)=sum(log(node_card(index)));
         clear index;
     end
