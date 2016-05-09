@@ -10,9 +10,9 @@
 # print("finish running matlab script !")
 
 write_clique_matlab <- function(out.dir, filename, domain) {
-    if (!exists("matlab") || !isOpen(matlab)) {
-      load_matlab()
-    }
+    #if (!exists("matlab") || !isOpen(matlab)) {
+    #  load_matlab()
+    #}
     
   filepath <- paste(out.dir, filename, ".clique", sep = '')
   clique.lines <- readLines(filepath)
