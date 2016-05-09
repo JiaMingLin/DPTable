@@ -10,7 +10,7 @@ RUN apt-get update && \
 RUN git clone https://github.com/JiaMingLin/DPTable.git
 
 # install required R packages
-RUN echo "options(repos = c(CRAN = 'https://cran.rstudio.com'))" >.Rprofile && \
+RUN echo "options(repos = c(CRAN = 'https://cran.rstudio.com'))" > /root/.Rprofile && \
     R -e 'source("http://bioconductor.org/biocLite.R") ; biocLite(c("graph","RBGL","Rgraphviz"), ask=FALSE) ' && \
-    R -e 'install.packages(c("R.oo", "methods", "R.matlab", "data.table", "distr", "entropy", "plyr", "FNN", "e1071", "stringr", "gRim", "gRain", "gRbase", "caret"))'
+    R -e 'install.packages(c("R.oo", "methods", "R.matlab", "data.table", "distr", "entropy", "plyr", "FNN", "e1071", "stringr", "gRim", "gRain", "gRbase", "caret", "rPython"))'
 
