@@ -45,7 +45,7 @@ Data <- setRefClass(           #讀取資料存放清單 及output的info檔案創建
     .load_coarse_data_summary = function(){   #load domain
       .self$domain <- list()
       dataname <- .self$name
-      path <- file.path('.', 'Data', dataname)
+      path <- file.path('.', 'data', dataname)
       file.conn <- file(paste(path, '-coarse.domain', sep = ''))
       domain.info <- readLines(file.conn)
       close(file.conn)
