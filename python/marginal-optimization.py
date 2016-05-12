@@ -183,7 +183,6 @@ def usage():
 
 if __name__ == "__main__":
     import sys
-
     if len(sys.argv) != 5:
         usage()
         sys.exit(1)

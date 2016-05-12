@@ -5,6 +5,7 @@ full.fpath <- tryCatch(normalizePath(parent.frame(2)$ofile),  # works when using
 this.dir <- dirname(full.fpath)
 code.dir <- paste(dirname(this.dir), "R", sep = "/")
 data.dir <- paste(dirname(this.dir), "data", sep = "/")
+python.dir <- paste(dirname(this.dir), "python", sep = "/")
 
 # set the working directory to the main folder containing all the directories
 wd.dir <- dirname(this.dir)
