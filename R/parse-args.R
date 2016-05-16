@@ -44,6 +44,12 @@ parse_args <- function(args) {                                  #¦U­Ó°Ñ¼Æ¸ü¤J©M¹
   }else{
     specs$flag.sim <- FALSE
   }
+  if ("nseed" %in% names(options.args)) {
+    specs$nseed <- options.args['nseed']
+  }else{
+    specs$nseed <- 1
+  }
+
   if ("dir" %in% names(options.args)) {
     specs$dir <- as.character(options.args['dir'])
   }else{

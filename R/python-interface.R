@@ -9,8 +9,8 @@
 # closeAllConnections()
 # print("finish running matlab script !")
 
-write_clique_python <- function(out.dir, filename, domain) {
-    
+write_clique_python <- function(out.dir, filename, domain, nseed) {
+  
   filepath <- paste(out.dir, filename, ".clique", sep = '')
   clique.lines <- readLines(filepath)
   num.of.clique <- length(clique.lines)
@@ -42,14 +42,15 @@ write_clique_python <- function(out.dir, filename, domain) {
 
     merge.function.path <- paste(python.dir, "marginal-optimization.py", sep="/")
     python.command <- "python"
+
     python.lines <- lapply(seq.int(from = 2, to = num.of.clique - 1)
                                    , function(ii){
                                       fout <- paste("\'", out.dir, filename,  ".merge", ii, "\'", sep="")
-                                      allArgs <- c(merge.function.path, fin, ii, 100, fout)
-				      system2(python.command, args=allArgs, stdou=TRUE)
+                                      allArgs <- c(merge.function.path, fin, ii, 100, fout, nseed)
+				                              system2(python.command, args=allArgs, stdou=TRUE)
                                       if (file.exists(fout)) file.remove(fout)
                                     })  
-  }
+    }
   merge.1 <- paste(out.dir, filename,  ".merge", 1, sep="")
   cat(paste(paste(seq.int(length(domain$name)), collapse=" "), "\n", sep="")
       , file = merge.1, append = FALSE)

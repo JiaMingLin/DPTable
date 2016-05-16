@@ -302,10 +302,11 @@ JunctionTree <- setRefClass(
                                        , flag.noise = TRUE
                                        , do.consistent = TRUE
                                        , epsilon.2 = NULL
-                                       , flag.debug = FALSE, flag.matlab = TRUE) {
+                                       , flag.debug = FALSE, flag.matlab = TRUE
+                                       , nseed = 1) {
       #use save/load for junction tree
       if(flag.matlab){
-	write_clique_python(out.dir, data.filename, domain)
+	write_clique_python(out.dir, data.filename, domain, nseed)
         compute_best_clusters(out.dir, data.filename, domain)  
       }
       

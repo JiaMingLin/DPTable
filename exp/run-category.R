@@ -22,6 +22,7 @@ main <- function(args) {                            #args(把计)
   epsilon.1 <- exp.specs$epsilon.1                   #篶noisy junction treeep
   epsilon.2 <- exp.specs$epsilon.2                  #marginalいnoiseep
   CV.thresh <- exp.specs$CV                         #numeric value in (0, 1), threshold Cramer's V value for picking correlated attributes pairs, 0.2 as default,typically choose 0.2 for weakly correlated datasets; 0.3 for highly correlated datasets
+  nseed <- exp.specs$nseed                         
   nrun<-exp.specs$nrun                              #runΩ计箇砞10
   flag.sim <- exp.specs$flag.sim                    #ガ狶 TRUE┪琌FALSEボ琌璶ネΘ┪家览synthetic data 箇砞琌F
   flag.process.query <- exp.specs$flag.process.query
@@ -116,6 +117,7 @@ print( paste("start inference with merge time:", Sys.time(), sep=" ") )         
       , epsilon.2=epsilon.2
       , flag.debug = FALSE
       , flag.matlab = TRUE
+      , nseed = nseed
     )
 
     if (flag.sim){

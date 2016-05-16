@@ -14,3 +14,6 @@ RUN echo "options(repos = c(CRAN = 'https://cran.rstudio.com'))" > /root/.Rprofi
     R -e 'source("http://bioconductor.org/biocLite.R") ; biocLite(c("graph","RBGL","Rgraphviz"), ask=FALSE) ' && \
     R -e 'install.packages(c("R.oo", "methods", "R.matlab", "data.table", "distr", "entropy", "plyr", "FNN", "e1071", "stringr", "gRim", "gRain", "gRbase", "caret", "rPython"))'
 
+WORKDIR /DPTable
+
+VOLUME ["/DPTable/data", "/DPTable/output"]
