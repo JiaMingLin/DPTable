@@ -38,7 +38,7 @@ print( paste("loading data. start time:", Sys.time(), sep=" ") )         #paste³
   curr.data <- Data$new(data.name)                                              #new??????????TAG?????
   tag.sample <- as.character(epsilon.1)                        #§âe1±q¼Æ­È¦æÂà´«¦¨¦r²Å«¬(¦r²Å¦ê¤£¯àºtºâ ·|ª½±µ¿é¥X)
   out.dir <- paste('./output/', data.name                               #out.dir¬O¤@­ÓÅã¥Ü¤åÀÉ¦W¡AªùÂe­È¡A®É¶¡ªº¦r²Å¦ê
-                   , "_CV_", as.character(CV.thresh), "_"
+                   , "_CV_", as.character(CV.thresh)
                    , "_nseed_", as.character(nseed), "_"
                    ,format(Sys.time(), "%Y%m%d_%H%M%S"), "/"
                    , sep = ""
