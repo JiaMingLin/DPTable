@@ -22,6 +22,7 @@ load_depends <- function() {
   library(Rgraphviz)
   library(gRim)
   library(gRbase)
+  library(crayon)
   options(message=0)
 }
 suppressMessages(load_depends())

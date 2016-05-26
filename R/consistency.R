@@ -23,14 +23,18 @@ ConsistentMargin <- setRefClass (
     },
     ##########################################################################
     fix_negative_entry_approx = function(flag.set = TRUE) {
+      # The noisy marginals
       curr.freq.list <- .self$clique.noisy.freq
       for (i in seq_along(curr.freq.list)) {
+        # If all the entries in ith noisey marginal are not all negative.
         if (length(which(curr.freq.list[[i]] > 0)) > 0) {
           margin.noisy <- curr.freq.list[[i]]
           margin.sorted <- sort.int(margin.noisy, index.return = TRUE
                                     , decreasing = TRUE)
+          # Find the positive entries in ith noisy marginal
           margin.sorted.pos <- margin.sorted$x[which(margin.sorted$x > 0)]
           if (length(margin.sorted.pos) > 0) {
+            # The cumulated sum.
             margin.cum <- cumsum(margin.sorted.pos)
             dist <- abs(.self$N - margin.cum)
             cut.pos <- which(dist == min(dist))

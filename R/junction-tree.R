@@ -304,10 +304,16 @@ JunctionTree <- setRefClass(
                                        , epsilon.2 = NULL
                                        , flag.debug = FALSE, flag.matlab = TRUE
                                        , nseed = 1) {
+      tm<-TimeMeasure$new("Junction Tree")
       #use save/load for junction tree
       if(flag.matlab){
+	tm$start("write_clique_python")
 	write_clique_python(out.dir, data.filename, domain, nseed)
-        compute_best_clusters(out.dir, data.filename, domain)  
+        tm$check()
+
+        tm$start("compute_best_clusters")
+        compute_best_clusters(out.dir, data.filename, domain)
+        tm$check()
       }
       
         
@@ -319,19 +325,43 @@ JunctionTree <- setRefClass(
       }
 
       .self$clusters <- load_clusters(out.dir, data.filename)
+
+      tm$start("inject_marginal_noise_data_table")
       .self$cluster.noisy.freq <- .inject_marginal_noise_data_table(data, epsilon.2, .self$clusters)
+      tm$check()
+            
       consistency <- ConsistentMargin$new(nrow(data), .self$clusters, domain, .self$cluster.noisy.freq)
+
+      tm$start("fix_negative_entry_approx")
       .self$cluster.noisy.freq <- consistency$fix_negative_entry_approx(flag.set = FALSE)
+      tm$check()
+
+      tm$start("enforce_global_consistency")
       .self$cluster.noisy.freq.consistent <- consistency$enforce_global_consistency() 
+      tm$check()
       
+      tm$start("set_clique_margin_from_cluster")
       .self$clique.noisy.freq <- set_clique_margin_from_cluster(data, domain, 
                                                                 noisy.freq = .self$cluster.noisy.freq)
+      tm$check()
+      
+      tm$start("set_clique_margin_from_cluster: consistent")
       .self$clique.noisy.freq.consistent <- set_clique_margin_from_cluster(
         data, domain, noisy.freq = .self$cluster.noisy.freq.consistent)
+      tm$check()
+
+      tm$start("init_potential_data_table")
       .init_potential_data_table(data, .self$clique.noisy.freq)
+      tm$check()
+     
+      tm$start("init_potential_data_table: consistent")
       .init_potential_data_table(data, .self$clique.noisy.freq.consistent, do.consistent = TRUE)
+      tm$check()
       # if(flag.debug) browser()
+    
+      tm$start("message passing")
       .message_passing()
+      tm$check()
       
     },
     

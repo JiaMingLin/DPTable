@@ -44,6 +44,7 @@ Temporary Items
 .Rproj.user
 
 # output directory
+/data/*
 /output/*
 /libsvm-3.20/*
 /objective_perturbation/*
@@ -54,3 +55,5 @@ Temporary Items
 *.Rproj
 *.Rhistory
 *.class
+*.domain
+*.dat

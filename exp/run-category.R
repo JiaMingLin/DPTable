@@ -15,6 +15,7 @@ options(error = NULL)                               #¦pªG²£¥Í¿ù»~«h¤£°µ¬°
 source(paste(code.dir, "init.R", sep = "/"))        #±Ò°ÊINIT
 
 main <- function(args) {                            #args(°Ñ¼Æ¦Cªí)
+  tm <- TimeMeasure$new("Main")
   exp.specs <- parse_args(args)                     #§âargs¦s¤Jexp.specs?  # FLAGÃþ¦ü¤@­Ó¶}Ãö ¤]³\¦³¹w³] 
   flag.sample <- exp.specs$flag.sample
   data.name <- exp.specs$data.name
@@ -32,9 +33,9 @@ main <- function(args) {                            #args(°Ñ¼Æ¦Cªí)
   all_kways = c(2)                                    #?????????????
 
 #adding benchmark
-op <- options(digits.secs=6)
-print( paste("loading data. start time:", Sys.time(), sep=" ") )         #paste³s±µ¦r²Å¦ê¡A¨C¤@­Ósys.time¤¤¶¡¥Î ¹j¶}
   cat("load data: ", data.name, "\n")                                   #Âà¤Æ¬°¦r²Å¡A¦A¦C¦L
+
+  tm$start("Loading Data")
   curr.data <- Data$new(data.name)                                              #new??????????TAG?????
   tag.sample <- as.character(epsilon.1)                        #§âe1±q¼Æ­È¦æÂà´«¦¨¦r²Å«¬(¦r²Å¦ê¤£¯àºtºâ ·|ª½±µ¿é¥X)
   out.dir <- paste('./output/', data.name                               #out.dir¬O¤@­ÓÅã¥Ü¤åÀÉ¦W¡AªùÂe­È¡A®É¶¡ªº¦r²Å¦ê
@@ -43,7 +44,7 @@ print( paste("loading data. start time:", Sys.time(), sep=" ") )         #paste³
                    ,format(Sys.time(), "%Y%m%d_%H%M%S"), "/"
                    , sep = ""
   ) 
-
+  tm$check()
   dir.create(out.dir)
   errors <- ErrorStats(data.name, epsilon.1, epsilon.2, out.dir)   #³Ð¸ê®Æ§¨
   
@@ -56,9 +57,11 @@ print( paste("loading data. start time:", Sys.time(), sep=" ") )         #paste³
       beta <- compute_best_sampling_rate_with_Gtest(data.name, curr.data$DB.size              #£]¡G¨ú¼Ë²v(¦butil.R¸Ì­±¦³¨ç¦¡­pºâ)
                                                     , epsilon.1
                                                     , curr.data$domain)
+      tm$start("Sampling Training Data")
       data.file <- curr.data$sample_data(out.dir, rate = beta                          #¿é¥X¸ê°T     
-                                         , out.tag = paste('-eps1-', tag.out, sep = "")
+                                         , out.tag = paste('-eps1-', tag.out, sep = "")      
       )  
+      tm$check()
     } else {                                                          #¦pªG¸ê®Æ¤£¦s¦b?????
       data.file <- paste(data.name, '-eps1-', tag.out, sep = "")
     }
@@ -68,11 +71,10 @@ print( paste("loading data. start time:", Sys.time(), sep=" ") )         #paste³
     sample.info <- curr.data$load_sample_info(out.dir, filename = data.file)
 
 #adding benchmark
-op <- options(digits.secs=6)
-print( paste("start dependency graph time:", Sys.time(), sep=" ") )
-
 
     beta <- as.numeric(sample.info$sample.rate)                                         #¨ú¼Ë²v
+
+    tm$start("DependenceGraph")
     sample.depgraph <- DependenceGraph$new(sample.data                                  #¬Û¨Ì¹Ï(DGRAPH.R¸Ì­±)
                                            , flag.sample = TRUE
                                            , flag.noise = TRUE                             #°õ¦ædgraph.r¨Ã§ó·s°Ñ¼Æ
@@ -81,13 +83,13 @@ print( paste("start dependency graph time:", Sys.time(), sep=" ") )
                                            , thresh.CV = CV.thresh
                                            , flag.debug = FALSE
     )
-  
+    tm$check()
 
 #adding benchmark
-op <- options(digits.secs=6)
-print( paste("start junctiontree time:", Sys.time(), sep=" ") )                     
   
-    types <- c('CV', 'chi2', 'CV2.noisy', 'Gtest.noisy')                               #±N¤@°ï°Ñ¼ÆÂà¤Æ¬°¦V¶q
+#    types <- c('CV', 'chi2', 'CV2.noisy', 'Gtest.noisy')                               #±N¤@°ï°Ñ¼ÆÂà¤Æ¬°
+    types <- c('CV2.noisy')
+    tm$start("JunctionTree")
     jtrees <- lapply(types, function(x){                                          #lapply¬O§âªF¦è³£®M¤J¤§«á¦^¶ÇLIST
       jtree <- JunctionTree$new(out.dir, edges=sample.depgraph$edges[[x]]
                                 , nodes = sample.depgraph$nodes
@@ -95,7 +97,8 @@ print( paste("start junctiontree time:", Sys.time(), sep=" ") )
                                 , type=x
                                 , flag.debug = TRUE)   
       return(jtree)
-    })                              
+    })
+    tm$check()                              
     names(jtrees) <- types                                       #?????
     plot(jtrees[['CV2.noisy']]$jtree)                              
     curr.jtree <- jtrees[['CV2.noisy']]
@@ -104,10 +107,8 @@ print( paste("start junctiontree time:", Sys.time(), sep=" ") )
     #     curr.jtree <- JunctionTree$new(flag.build = FALSE
     #                                    , jtree.file = paste("output/",data.file, "-", type, "-jtree.Rdata",sep=""))
 
-#adding benchmark
-op <- options(digits.secs=6)
-print( paste("start inference with merge time:", Sys.time(), sep=" ") )               #form attribute clusters
-
+    
+    tm$start("do_inference_with_merge")
     curr.jtree$do_inference_with_merge(                                      #©I¥sMAT­pºâMERGE
       out.dir
       , curr.data$origin
@@ -120,29 +121,27 @@ print( paste("start inference with merge time:", Sys.time(), sep=" ") )         
       , flag.matlab = TRUE
       , nseed = nseed
     )
+    tm$check()
 
     if (flag.sim){
 
-#adding benchmark
-op <- options(digits.secs=6)
-print( paste("start generate data time:", Sys.time(), sep=" ") )                           #¼ÒÀÀ¥X©MDB¤@¼Ë¤jªºsynthetic data
-
+      tm$start("simulate")
       data.sim <- curr.jtree$simulate(curr.data$DB.size)                              #¥Í¦¨SIMULATE.DAT(¦bJTREE.R)
+      tm$check()
       data.sim <- data.sim[, colnames(curr.data$origin)]
       data.sim.file <- paste(out.dir, data.file, "-eps2-", epsilon.2, "-sim.dat",sep="")
 
-#adding benchmark
-op <- options(digits.secs=6)
-print( paste("start write data time:", Sys.time(), sep=" ") )
-
+      tm$start("Write to disk")
       write.table(data.sim                         #¿é¥X¦hÅÜ¼Æ¸ê®ÆÀÉ
                   , data.sim.file
                   , row.names = FALSE
                   , col.names = FALSE
                   , quote=FALSE
                   , sep = ",")
+      tm$check()
       
     }
+     
     
 #adding benchmark
 op <- options(digits.secs=6)
