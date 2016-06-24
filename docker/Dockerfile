@@ -14,6 +14,16 @@ RUN echo "options(repos = c(CRAN = 'https://cran.rstudio.com'))" > /root/.Rprofi
 
 RUN git clone https://github.com/JiaMingLin/DPTable.git
 
-WORKDIR /DPTable
+# install MySQL
+ADD my.cnf /my.cnf
+RUN apt-get install mariadb-server python-mysqldb -y --force-yes && \
+    cp /my.cnf /etc/mysql/my.cnf
+    
+# install Django
+RUN pip install Django
 
-VOLUME ["/DPTable/data", "/DPTable/output"]
+
+WORKDIR /DPTable
+VOLUME ["/DPTable/data", "/DPTable/output", "/workspace"]
+
+EXPOSE 8080
